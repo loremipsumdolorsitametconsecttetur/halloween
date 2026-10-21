@@ -1,0 +1,51 @@
+name: Generate Halloween SVG
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "src/**"
+      - "package.json"
+      - "package-lock.json"
+      - ".github/workflows/generate-svg.yml"
+  schedule:
+  workflow_dispatch:       # "Run workflow" button in the Actions tab
+
+# Needed so the job can push the regenerated SVG back to the repo.
+permissions:
+  contents: write
+
+concurrency:
+  group: generate-svg
+  cancel-in-progress: true
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - run: npm ci
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Generate SVG
+        run: npm run build:svg
+
+      - name: Commit and push if changed
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add assets/halloween.svg
+          if git diff --staged --quiet; then
+            echo "No changes to assets/halloween.svg"
+          else
+            git commit -m "chore: regenerate assets/halloween.svg"
+            git push
+          fi
