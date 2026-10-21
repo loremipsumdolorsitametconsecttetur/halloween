@@ -1,0 +1,19 @@
+{
+  "name": "halloween-svg",
+  "version": "1.0.0",
+  "description": "Generates an animated Halloween pixel-art SVG (Slice or Treat).",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build:svg": "tsx src/index.ts assets/halloween.svg",
+    "typecheck": "tsc --noEmit"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "devDependencies": {
+    "@types/node": "^26.6.5",
+    "tsx": "^4.23.15",
+    "typescript": "^7.0.2"
+  }
+}
